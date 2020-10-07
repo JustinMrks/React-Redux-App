@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import WeatherCard from "./Components/WeatherCard";
+import { connect } from "react-redux";
+import { fetchWeather } from "./store/actions";
 
-function App() {
+const App = (props) => {
+  const { fetchWeather } = props;
+
+  useEffect(() => {
+    fetchWeather(props.woeid);
+  }, [fetchWeather, props.woeid]);
+
+  console.log(props);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {props.isLoading ? (
+        <h1>loading...</h1> /* if we wannna add spinner do so here */
+      ) : (
+        props.weather.consolidated_weather.map((forecast, index) => {
+          return <WeatherCard key={index} forecast={forecast} />;
+        })
+      )}
     </div>
   );
-}
+};
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    weather: state.weather,
+    woeid: state.woeid,
+    isLoading: state.isLoading,
+  };
+};
+
+export default connect(mapStateToProps, { fetchWeather })(App);
