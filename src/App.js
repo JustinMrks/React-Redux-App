@@ -3,6 +3,7 @@ import "./App.css";
 import WeatherCard from "./Components/WeatherCard";
 import { connect } from "react-redux";
 import { fetchWeather } from "./store/actions";
+import WeatherForm from "./Components/WeatherForm";
 
 const App = (props) => {
   const { fetchWeather } = props;
@@ -15,8 +16,10 @@ const App = (props) => {
 
   return (
     <div className="App">
+      <h1>{props.isLoading ? "Loading location" : props.weather.title}</h1>
+      <WeatherForm />
       {props.isLoading ? (
-        <h1>loading...</h1> /* if we wannna add spinner do so here */
+        <h1>loading weather...</h1> /* if we wannna add spinner do so here */
       ) : (
         props.weather.consolidated_weather.map((forecast, index) => {
           return <WeatherCard key={index} forecast={forecast} />;
